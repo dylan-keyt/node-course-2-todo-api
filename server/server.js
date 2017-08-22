@@ -52,19 +52,6 @@ app.get('/todos/:id', (req, res) => {
   });
 });
 
-app.post('/users', (req, res) => {
-  const user = new User({
-    email: req.body.email
-  });
-
-  user.save().then(user => {
-    res.send(user);
-  }, err => {
-    res.status(400).send(err);
-  })
-  console.log(req.body);
-});
-
 app.delete('/todos/:id', (req, res) => {
   const id = req.params.id;
 
@@ -106,6 +93,27 @@ app.patch('/todos/:id', (req, res) => {
     res.status(400).send();
   })
 
+});
+
+// Users
+app.get('/users', (req, res) => {
+  User.find().then(users => {
+    res.send({users});
+  }, err => {
+    res.status(400).send(err);
+  });
+});
+
+app.post('/users', (req, res) => {
+  const body = _.pick(req.body, ['email', 'password']);
+  const user = new User(body);
+
+  user.save().then(user => {
+    res.send(user);
+  }, err => {
+    res.status(400).send(err);
+  })
+  console.log(req.body);
 });
 
 app.listen(port, () => {
