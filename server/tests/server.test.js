@@ -185,6 +185,21 @@ describe('/todos', () => {
         .end(done);
     });
 
+    it('should not update the todo someone else created', (done) => {
+      const hexId = todos[0]._id.toHexString();
+      const text = 'This should be the new text';
+
+      request(app)
+        .patch(`/todos/${hexId}`)
+        .set('x-auth', users[1].tokens[0].token)
+        .send({
+          completed: true,
+          text
+        })
+        .expect(404)
+        .end(done);
+    });
+
 
     it('should clear completedAt when todo is not completed', (done) => {
       const hexId = todos[0]._id.toHexString();
